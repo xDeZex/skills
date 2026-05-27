@@ -295,8 +295,93 @@ Install the `spec-driven-custom` OpenSpec schema into the current project.
        tests, or implementation reveals a design issue (suggest updating artifacts).
    ```
 
-3. Confirm: `✓ Schema installed at openspec/schemas/spec-driven-custom/schema.yaml`
+3. Write the four template files into `openspec/schemas/spec-driven-custom/templates/`:
+
+   **`templates/proposal.md`**:
+   ```markdown
+   ## Why
+
+   <!-- Explain the motivation for this change. What problem does this solve? Why now? -->
+
+   ## What Changes
+
+   <!-- Describe what will change. Be specific about new capabilities, modifications, or removals. -->
+
+   ## Capabilities
+
+   ### New Capabilities
+   <!-- Capabilities being introduced. Replace <name> with kebab-case identifier (e.g., user-auth, data-export, api-rate-limiting). Each creates specs/<name>/spec.md -->
+   - `<name>`: <brief description of what this capability covers>
+
+   ### Modified Capabilities
+   <!-- Existing capabilities whose REQUIREMENTS are changing (not just implementation).
+        Only list here if spec-level behavior changes. Each needs a delta spec file.
+        Use existing spec names from openspec/specs/. Leave empty if no requirement changes. -->
+   - `<existing-name>`: <what requirement is changing>
+
+   ## Impact
+
+   <!-- Affected code, APIs, dependencies, systems -->
+   ```
+
+   **`templates/spec.md`**:
+   ```markdown
+   ## ADDED Requirements
+
+   ### Requirement: <!-- requirement name -->
+   <!-- requirement text -->
+
+   #### Scenario: <!-- scenario name -->
+   - **WHEN** <!-- condition -->
+   - **THEN** <!-- expected outcome -->
+   ```
+
+   **`templates/design.md`**:
+   ```markdown
+   ## Context
+
+   <!-- Background and current state -->
+
+   ## Goals / Non-Goals
+
+   **Goals:**
+   <!-- What this design aims to achieve -->
+
+   **Non-Goals:**
+   <!-- What is explicitly out of scope -->
+
+   ## Decisions
+
+   <!-- Key design decisions and rationale -->
+
+   ## Risks / Trade-offs
+
+   <!-- Known risks and trade-offs -->
+   ```
+
+   **`templates/tasks.md`**:
+   ```markdown
+   ## 1. <!-- Task Group Name -->
+
+   - [ ] 1.1 <!-- Task description -->
+   - [ ] 1.2 <!-- Task description -->
+
+   ## 2. <!-- Task Group Name -->
+
+   - [ ] 2.1 <!-- Task description -->
+   - [ ] 2.2 <!-- Task description -->
+   ```
+
+4. Confirm:
+   ```
+   ✓ Schema installed at openspec/schemas/spec-driven-custom/
+     schema.yaml
+     templates/proposal.md
+     templates/spec.md
+     templates/design.md
+     templates/tasks.md
+   ```
 
    Tell the user they can now create changes with `--schema spec-driven-custom` (or however openspec selects schemas).
 
-**Note**: The schema file is also available at `references/schema.yaml` inside this installed skill if you ever need to inspect it directly.
+**Note**: All schema files are also available under `references/` inside this installed skill if you ever need to inspect them directly.
