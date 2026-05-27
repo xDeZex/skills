@@ -1,67 +1,59 @@
 ---
 name: code-review
-description: Spawn a focused code review subagent. Use after every RED/GREEN/REFACTOR cycle (pass the files changed in that cycle), after a commit, or whenever the user asks for a review. Always use this skill for reviews — it ensures the review lens is test-first and findings are fix-oriented.
+description: Spawn a focused code review subagent. Use after every RED/GREEN cycle (pass the files changed in that cycle), after a commit, or whenever the user asks for a review. Always use this skill for reviews — it ensures the review lens is test-first and findings are fix-oriented.
 ---
 
-Spawn a code review subagent with the right context and instructions.
+Spawn a code review subagent with the diff and let it gather its own context.
 
 ## Determine scope
 
-- **Per-behavior cycle** (during openspec apply): the files changed in this RED/GREEN/REFACTOR cycle only — not the full diff
+- **Per-behavior cycle** (during openspec apply): the files changed in this RED/GREEN cycle only — not the full diff
 - **Final review** (end of all OpenSpec tasks, user-triggered, or any ad-hoc request): the full branch diff against main
 
 ## Steps
 
-1. **Gather the code to review**
-   - Per-cycle: identify changed files from `git show --name-only HEAD`, then run `git show HEAD -- <files>` scoped to those files
-   - Final review: run `git diff origin/main` to get the full branch diff, unless the user pointed at something more specific (a file path, commit ref, or range)
+1. **Get the diff — nothing else**
+   - Per-cycle: `git show HEAD -- <changed files>` (identify files from `git show --name-only HEAD`)
+   - Final review: `git diff origin/main`, unless the user pointed at something more specific (a file path, commit ref, or range)
 
-   In all cases the diff tells the reviewer which lines changed. Pass it verbatim — the reviewer reads the full files itself for context.
+2. **Spawn a subagent** and pass it:
+   - The diff (verbatim)
+   - The scope: per-cycle or final review
+   - Whether an active OpenSpec change exists (run `openspec list --json` only if you don't already know)
+   - The active change name, if any
 
-   **If OpenSpec context will be gathered (step 2):** strip `openspec/changes/**` file sections from the diff before passing it. Those files are already provided as structured context; including them in the diff is redundant.
+   The subagent handles all further reading — reviewer reference, OpenSpec files, changed files. Do not pre-read those yourself.
 
-2. **Gather OpenSpec context** (skip if no active change)
+   **Per-cycle subagent instructions:**
+   > You are doing a per-cycle code review. Read `references/reviewer-light.md` from your skill directory for the review lens.
+   >
+   > The diff is below. Read ±30 lines of context around each changed hunk only — not the full file.
+   >
+   > If an active OpenSpec change is named, gather context yourself:
+   > - Read `openspec/changes/<name>/proposal.md` and extract capability names under **New Capabilities** and **Modified Capabilities**
+   > - For each capability, read the global spec (`openspec/specs/<capability>/spec.md`) and the delta spec (`openspec/changes/<name>/specs/<capability>/spec.md`)
+   > - Read `openspec/changes/<name>/tasks.md` to identify the behavior in scope
+   > - Strip `openspec/changes/**` hunks from the diff — those files are already provided as structured context
+   >
+   > Undeclared impact (code touches something not listed in the proposal) is itself a finding.
+   >
+   > Model: haiku
 
-   Run `openspec list --json` to check for an active change. If one exists:
+   **Final review subagent instructions:**
+   > You are doing a final code review. Read `references/reviewer.md` from your skill directory for the review lens.
+   >
+   > The diff is below. Read each changed file in full before reviewing.
+   >
+   > If an active OpenSpec change is named, gather context yourself:
+   > - Read `openspec/changes/<name>/proposal.md` and extract capability names under **New Capabilities** and **Modified Capabilities**
+   > - For each capability, read the global spec (`openspec/specs/<capability>/spec.md`) and the delta spec (`openspec/changes/<name>/specs/<capability>/spec.md`)
+   > - Read `openspec/changes/<name>/tasks.md` to identify which behaviors were in scope
+   > - Strip `openspec/changes/**` hunks from the diff — those files are already provided as structured context
+   >
+   > Undeclared impact (code touches something not listed in the proposal) is itself a finding.
+   >
+   > Model: sonnet
 
-   a. Read `openspec/changes/<name>/proposal.md` and extract the capability names
-      listed under **New Capabilities** and **Modified Capabilities**.
+3. **Print the full report verbatim.** Output the subagent's findings as a text message before doing anything else. Do not skip ahead to fixing.
 
-   b. For each capability, read:
-      - The global spec: `openspec/specs/<capability>/spec.md` — the full current requirements
-      - The delta spec: `openspec/changes/<name>/specs/<capability>/spec.md` — what this change declared it would add or modify
-
-   c. Read `openspec/changes/<name>/tasks.md` to know which behavior is currently
-      in scope (the task being reviewed).
-
-   Only load specs for capabilities named in the proposal. If the code touches
-   something not listed there, note it — undeclared impact is itself a finding.
-
-3. **Read the appropriate reviewer reference** — both files live inside the skill's own directory (`<skill-base-dir>/references/`):
-   - Per-cycle: read `references/reviewer-light.md`
-   - Final review: read `references/reviewer.md`
-
-4. **Spawn a subagent** — model and file-reading depth differ by scope:
-
-   **Per-cycle (Haiku):**
-   - model: haiku
-   - Opening instructions: full content of `references/reviewer-light.md`
-   - The diff (verbatim), labelled "Changed lines"
-   - An instruction to read ±30 lines of context around each changed hunk only — not the full file
-   - If OpenSpec context was gathered: global specs, delta specs, current task description (same as below)
-   - A note that this is a per-cycle review
-
-   **Final review (Sonnet):**
-   - model: sonnet
-   - Opening instructions: full content of `references/reviewer.md`
-   - The diff (verbatim), labelled "Changed lines"
-   - An instruction to read each changed file in full before reviewing
-   - If OpenSpec context was gathered:
-     - The global specs for each capability, labelled "Requirements (global spec)"
-     - The delta specs, labelled "Requirements (this change)"
-     - The current task description, labelled "Behavior in scope"
-   - A note that this is a final review of the full change
-
-5. **Print the full report to the user NOW, before doing anything else.** Output the subagent's report verbatim as a text message. Do not skip ahead to fixing — the user must see the findings first.
-
-6. **Act on findings** — only after printing the report. The subagent reports only; the main Claude acts on findings per the project workflow in CLAUDE.md.
+4. **Act on findings** — only after printing. The main Claude acts on findings per the project workflow in CLAUDE.md.
