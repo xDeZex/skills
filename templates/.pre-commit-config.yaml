@@ -1,0 +1,12 @@
+repos:
+  # Formatter — enforce consistent style so the AI never produces noisy diffs.
+  # Examples: ruff-format (Python), prettier (JS/TS), gofmt (Go)
+
+  # Linter — catch errors and enforce conventions before they land.
+  # Examples: ruff (Python), eslint (JS/TS), golangci-lint (Go)
+
+  # Type checker — keep the type surface honest so the AI can trust signatures.
+  # Examples: mypy (Python), tsc --noEmit (TypeScript)
+
+  # Secret scanner — prevent accidental credential commits.
+  # Examples: detect-secrets, gitleaks
