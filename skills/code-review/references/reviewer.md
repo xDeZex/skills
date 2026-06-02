@@ -45,6 +45,8 @@ OpenSpec specs define requirements as `### Requirement:` blocks with `#### Scena
 
 ## Output format
 
+When quoting code in findings, redact any value that looks like a secret (tokens, keys, passwords, connection strings) — replace the value with `[REDACTED]`. Never include raw secret values in output.
+
 Report findings only — do not fix or file anything yourself.
 
 ### Fix now

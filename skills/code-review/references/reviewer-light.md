@@ -32,6 +32,8 @@ For each scenario in the current behavior in scope: does the implementation sati
 
 ## Output format
 
+When quoting code in findings, redact any value that looks like a secret (tokens, keys, passwords, connection strings) — replace the value with `[REDACTED]`. Never include raw secret values in output.
+
 Report findings only.
 
 ### Fix now
