@@ -8,13 +8,13 @@ Spawn a code review subagent with the diff and let it gather its own context.
 ## Determine scope
 
 - **Per-behavior cycle** (during openspec apply): the files changed in this RED/GREEN cycle only — not the full diff
-- **Final review** (end of all OpenSpec tasks, user-triggered, or any ad-hoc request): the full branch diff against main
+- **Full review** (end of all OpenSpec tasks, user-triggered, or any ad-hoc request): the full branch diff against main
 
 ## Steps
 
 1. **Get changed file names — nothing else**
    - Per-cycle: `git show --name-only HEAD` — file names only, no diff content
-   - Final review: `git diff --name-only origin/main` — unless the user pointed at something more specific (a file path, commit ref, or range)
+   - Full review: `git diff --name-only origin/main` — unless the user pointed at something more specific (a file path, commit ref, or range)
 
 2. **For per-cycle reviews, gather task context before spawning:**
    - Read `openspec/changes/<name>/tasks.md` and identify the current in-progress task (task number + full description)
@@ -23,7 +23,7 @@ Spawn a code review subagent with the diff and let it gather its own context.
 
 3. **Spawn a subagent** and pass it:
    - The changed file names
-   - The scope: per-cycle or final review
+   - The scope: per-cycle or full review
    - Whether an active OpenSpec change exists (run `openspec list --json` only if you don't already know)
    - The active change name, if any
    - Per-cycle only: the current task number, description, and the WHEN/THEN scenarios in scope
@@ -43,8 +43,8 @@ Spawn a code review subagent with the diff and let it gather its own context.
    >
    > Model: haiku
 
-   **Final review subagent instructions:**
-   > You are doing a final code review. Read `references/reviewer.md` from your skill directory for the review lens.
+   **Full review subagent instructions:**
+   > You are doing a full code review. Read `references/reviewer.md` from your skill directory for the review lens.
    >
    > Below is a list of changed files. Read each changed file in full before reviewing.
    >
