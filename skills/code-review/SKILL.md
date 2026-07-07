@@ -41,7 +41,7 @@ Spawn a code review subagent with the diff and let it gather its own context.
    >
    > Undeclared impact (code touches something not listed in the proposal) is itself a finding.
    >
-   > Model: haiku
+   > Model: sonnet
 
    **Full review subagent instructions:**
    > You are doing a full code review. Read `references/reviewer.md` from your skill directory for the review lens.
