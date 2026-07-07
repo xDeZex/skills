@@ -1,6 +1,6 @@
 ---
 name: openspec-schema-spec-driven-custom
-description: Install the spec-driven-custom OpenSpec schema into the current project. Use when setting up a new project to use the TDD-focused OpenSpec workflow (RED/GREEN/REVIEW cycle, no refactor step).
+description: Install the spec-driven-custom OpenSpec schema into the current project. Use when setting up a new project to use the TDD-focused OpenSpec workflow (RED/GREEN per task, REVIEW per group and full branch, no refactor step).
 license: MIT
 metadata:
   author: openspec
@@ -9,7 +9,7 @@ metadata:
 
 Install the `spec-driven-custom` OpenSpec schema into the current project.
 
-**What this schema is**: A TDD-focused variant of the standard `spec-driven` workflow. The apply phase enforces a strict RED → GREEN → REVIEW → COMMIT cycle per task (no refactor step). Identical to `spec-driven` in all other respects (proposal → specs → [design] → tasks).
+**What this schema is**: A TDD-focused variant of the standard `spec-driven` workflow. The apply phase runs RED → GREEN per code task (skipped for non-code work), COMMITs every task as a checkpoint, then REVIEWs per group and again across the full branch (no refactor step). Identical to `spec-driven` in all other respects (proposal → specs → [design] → tasks).
 
 **Prerequisite**: `openspec init` must have been run in this project already.
 
