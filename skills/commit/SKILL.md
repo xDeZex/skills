@@ -1,41 +1,25 @@
 ---
 name: commit
-description: Make a git commit with the issue number in brackets in the message, and close the issue if this commit completes all its work. Use this skill whenever the user asks to commit, says "make a commit", "commit this", "commit my changes", "/commit", or wants to save their work to git. Always use this skill for commits — it ensures issues are properly referenced and closed.
+description: Make a git commit following Conventional Commits, with the issue number referenced in a footer trailer, closing the issue if this commit completes all its work. Use this skill whenever the user asks to commit, says "make a commit", "commit this", "commit my changes", "/commit", or wants to save their work to git.
 ---
 
 # Commit Skill
 
-Make a git commit that references the relevant GitHub issue, and closes it when this commit completes all the work.
+Write the message per [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): pick `type` from the spec's set based on the diff, match this repo's existing convention of no scopes, and flag breaking changes exactly as the spec describes.
 
-## Commit message format
+Layer issue tracking on as a footer trailer:
+- `Closes #N` — only when the diff covers everything the issue describes.
+- `Refs #N` — partial work, or any time you're not closing it.
+- Multiple issues: one trailer line per issue.
+- No related issue: omit the trailer.
 
 ```
-[#N] type: short description
-
-Optional body with more detail.
-
-Closes #N
-```
-
-- The `[#N]` prefix goes at the very start of the subject line.
-- `type` follows conventional commits: `feat`, `fix`, `ci`, `refactor`, `test`, `docs`, `chore`.
-- The `Closes #N` trailer is only added when this commit finishes all the work in the issue. If it's partial work, omit it — just the `[#N]` prefix suffices.
-- If multiple issues are addressed, list them: `[#5, #7]` and add a `Closes` line per completed issue.
-- If there's no related issue, omit the `[#N]` prefix entirely and commit normally.
-
-**Example — completing an issue:**
-```
-[#5] feat: add FeedSourceRepository with DataStore persistence
+feat: add FeedSourceRepository with DataStore persistence
 
 Implements CRUD operations for feed source URLs/names backed by
 Jetpack DataStore.
 
 Closes #5
-```
-
-**Example — partial work:**
-```
-[#8] feat: add ArticleCard composable
 ```
 
 ## Step-by-step
@@ -53,16 +37,13 @@ Try in order until you have it:
 
 1. **User told you** — they mentioned "#5" or "issue 5" in their request.
 2. **Branch name** — extract from branch names like `feature/issue-5-feed-repo` or `feat/5-something`. Run `git branch --show-current`.
-3. **Recent commit** — if prior commits on this branch already reference an issue, use the same one.
-4. **Ask the user** — if none of the above works, ask: "Which issue does this work relate to? (or say 'none' if there isn't one)"
+3. **Ask the user** — if none of the above works, ask: "Which issue does this work relate to? (or say 'none' if there isn't one)"
 
 ### 3. Decide whether to close the issue
 
 Look at the issue to understand its scope: `gh issue view <N>`. Compare the issue's checklist/description against what the diff actually implements.
 
-Close the issue (`Closes #N`) when the diff covers everything the issue describes. If it's one piece of a larger issue, just reference it with `[#N]`.
-
-When in doubt, don't close — it's easy to close manually, hard to reopen.
+Close (`Closes #N`) only when the diff covers everything the issue describes; otherwise reference it (`Refs #N`). When in doubt, reference — it's easy to close manually later, hard to reopen.
 
 ### 4. Stage and commit
 
@@ -71,14 +52,14 @@ Stage only relevant files — prefer naming them explicitly over `git add -A` to
 Then commit:
 ```bash
 git commit -m "$(cat <<'EOF'
-[#N] type: description
+type: description
 
 Closes #N
 EOF
 )"
 ```
 
-Omit the blank line + `Closes #N` if not closing the issue.
+Swap in `Refs #N`, or drop the trailer entirely, per the decision above.
 
 ### 5. Confirm
 
