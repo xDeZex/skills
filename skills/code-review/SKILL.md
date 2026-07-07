@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Spawn a focused review subagent over a diff. Use after a commit or a batch of related commits, at the end of a branch, or whenever the user asks for a review — for source code or any other changed files (docs, config, specs). Always use this skill for reviews — findings come back fix-oriented, not just observations.
+description: Review a diff via a focused subagent. Use after a commit or a batch of related commits, at the end of a branch, or whenever the user asks for a review — for source code or any other changed files (docs, config, specs). Findings come back fix-oriented, not just observations, so prefer this over reviewing the diff yourself.
 ---
 
 Spawn a review subagent with the diff and let it gather its own context.
