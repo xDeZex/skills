@@ -245,6 +245,9 @@ apply:
     - tasks
   tracks: tasks.md
   instruction: |
+    Every commit below is a `[temporary]` checkpoint — run `git commit -m` directly with
+    the exact literal message shown, verbatim, regardless of any other commit convention.
+
     Before implementing, check if any planning artifacts (proposal, specs, design, tasks)
     have uncommitted changes (`git status`). If so, commit them in one commit with message
     `plan [temporary]: <change-name>`. This preserves the plan as a restore point if the
