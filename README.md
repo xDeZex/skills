@@ -21,5 +21,5 @@ npx skills add xDeZex/skills
 | `openspec-explore` | Thinking-partner mode for exploring ideas and clarifying requirements before committing to a change |
 | `openspec-archive-change` | Archive a completed change in the OpenSpec workflow |
 | `openspec-apply-change` | Apply a proposed change and work through its tasks |
-| `openspec-schema-spec-driven-custom` | Install the TDD-focused `spec-driven-custom` schema into a project (RED → GREEN → REVIEW, no refactor step) |
+| `openspec-schema-spec-driven-tdd` | Install the TDD-focused `spec-driven-tdd` schema into a project (RED → GREEN → REVIEW, no refactor step) |
 | `c4-diagram` | Create and refine C4 architecture diagrams using PlantUML — renders via Kroki, visually inspects, and iterates until clean |
