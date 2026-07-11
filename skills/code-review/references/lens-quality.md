@@ -9,6 +9,7 @@ For non-code changes (docs, config, schemas, specs), apply the same rigor withou
 - Logic errors → suggest the RED test that would catch it, then the fix
 - Missing behavior coverage → suggest the test that should exist
 - Edge cases the current tests don't reach
+- Undeclared impact — the diff touches something not accounted for elsewhere — is itself a finding
 
 ## Implementation scope
 

@@ -23,42 +23,20 @@ Spawn a review subagent with the diff and let it gather its own context.
    - This context is passed inline to the subagent(s) — do not leave it for a subagent to gather.
    - If no active change, or no in-scope scenarios are found, there is no spec to review against — proceed without spec context.
 
-3. **Spawn the subagent(s).** The subagent(s) handle diff retrieval and any additional reading they need.
+3. **Spawn the subagent(s).** Each is a named agent defined in `agents/` (model + effort fixed in its frontmatter — do not override with a `Model:` line). The subagent(s) handle diff retrieval and any additional reading they need. These agent definitions must also exist at `.claude/agents/` (project or user level) wherever this skill is installed, or `subagent_type` will fail to resolve — copy them alongside the skill itself.
 
-   **Incremental — one subagent, Quality + Spec combined:**
-   > You are doing an incremental review. Read `references/reviewer-incremental.md` from your skill directory for the review lens.
+   **Incremental — one subagent, Quality + Spec combined.** Spawn `subagent_type: code-reviewer-incremental` (`agents/code-reviewer-incremental.md`, effort: medium):
+   > Range: <the range identified in step 1, or the last commit if none was given>. Files: <the file list from step 1>.
    >
-   > Run `git diff --unified=30 <range> -- <files>` for the range identified below (or `git show --unified=30 HEAD -- <files>` if none was given) to get the full diff with context. Use that diff as your primary source — do not rely on reading file state to reconstruct what changed.
-   >
-   > If task context is provided below, review against it and do not re-read tasks.md or spec files.
-   >
-   > `openspec/changes/**` files are already summarized in the context provided above — don't re-read them to rebuild that context. If any such file is itself part of the changed-file list, still review it for quality (internal consistency, accurate cross-references, examples that match their own rule) like any other changed file.
-   >
-   > Undeclared impact (the diff touches something not accounted for elsewhere) is itself a finding.
-   >
-   > Model: sonnet
+   > Task context (if step 2 found one): <task number + full description, and the in-scope WHEN/THEN scenarios>.
 
    **Full — two parallel subagents, one per axis.** Send a single message with both `Agent` tool calls.
 
-   Quality subagent:
-   > You are doing a full review, Quality axis. Read `references/reviewer-full.md` from your skill directory for the review lens.
-   >
-   > Below is a list of changed files and the command to get the full diff (`git diff origin/main -- <files>`, or the range/ref the user pointed at). Get the diff first — it shows where to focus — then read each changed file in full before reviewing.
-   >
-   > `openspec/changes/**` files are already summarized in the context provided above — don't re-read them to rebuild that context. If any such file is itself part of the changed-file list, still review it for quality (internal consistency, accurate cross-references, examples that match their own rule) like any other changed file; spec compliance itself is handled by a separate review.
-   >
-   > Undeclared impact (the diff touches something not accounted for elsewhere) is itself a finding.
-   >
-   > Model: sonnet
+   Quality subagent — `subagent_type: code-reviewer-quality` (`agents/code-reviewer-quality.md`, effort: high):
+   > Changed files: <the file list from step 1>. Diff command: `git diff origin/main -- <files>` (or the range/ref the user pointed at).
 
-   Spec subagent — only spawn if step 2 found an active change with in-scope scenarios:
-   > You are doing a full review, Spec axis. Read `references/reviewer-spec.md` from your skill directory for the review lens.
-   >
-   > Below is the diff command and commit list, the active OpenSpec change name, and the WHEN/THEN scenarios in scope from step 2. Do not re-read tasks.md or the proposal for scope — use what's provided.
-   >
-   > Model: sonnet
-
-   If step 2 found no spec to review against, skip the Spec subagent — do not spawn it.
+   Spec subagent — `subagent_type: code-reviewer-spec` (`agents/code-reviewer-spec.md`, effort: medium) — only spawn if step 2 found an active change with in-scope scenarios:
+   > Diff command and commit list, the active OpenSpec change name, and the WHEN/THEN scenarios in scope from step 2.
 
 4. **Print the full report verbatim.** Output the findings as a text message before doing anything else, in order — do not skip ahead to fixing. Then act on the findings per the project's documented workflow (e.g. `AGENTS.md`, `CLAUDE.md`), if one exists.
    - Incremental: print the single subagent's report as-is.
