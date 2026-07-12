@@ -23,9 +23,13 @@ Spawn a review subagent with the diff and let it gather its own context.
    - This context is passed inline to the subagent(s) — do not leave it for a subagent to gather.
    - If no active change, or no in-scope scenarios are found, there is no spec to review against — proceed without spec context.
 
-3. **Spawn the subagent(s).** Each is a named agent defined in `agents/` (model + effort fixed in its frontmatter — do not override with a `Model:` line). The subagent(s) handle diff retrieval and any additional reading they need. These agent definitions must also exist at `.claude/agents/` (project or user level) wherever this skill is installed, or `subagent_type` will fail to resolve — copy them alongside the skill itself.
+3. **Resolve this skill's own directory once, as an absolute path**, before spawning anything — e.g. `Glob('**/code-review/SKILL.md')` if you don't already know where this file was loaded from — and reuse that one result for every subagent prompt below. Subagents start with no filesystem context, so if you don't hand them the path, each one re-searches the whole filesystem for it independently (slow, and wasteful across every parallel subagent).
+
+4. **Spawn the subagent(s).** Each is a named agent defined in `agents/` (model + effort fixed in its frontmatter — do not override with a `Model:` line). The subagent(s) handle diff retrieval and any additional reading they need. These agent definitions must also exist at `.claude/agents/` (project or user level) wherever this skill is installed, or `subagent_type` will fail to resolve — copy them alongside the skill itself. Every subagent prompt below must start with `Skill directory: <absolute path from step 3>`.
 
    **Incremental — one subagent, Quality + Spec combined.** Spawn `subagent_type: code-reviewer-incremental` (`agents/code-reviewer-incremental.md`, effort: medium):
+   > Skill directory: <absolute path from step 3>.
+   >
    > Range: <the range identified in step 1, or the last commit if none was given>. Files: <the file list from step 1>.
    >
    > Task context (if step 2 found one): <task number + full description, and the in-scope WHEN/THEN scenarios>.
@@ -33,11 +37,15 @@ Spawn a review subagent with the diff and let it gather its own context.
    **Full — two parallel subagents, one per axis.** Send a single message with both `Agent` tool calls.
 
    Quality subagent — `subagent_type: code-reviewer-quality` (`agents/code-reviewer-quality.md`, effort: high):
+   > Skill directory: <absolute path from step 3>.
+   >
    > Changed files: <the file list from step 1>. Diff command: `git diff origin/main -- <files>` (or the range/ref the user pointed at).
 
    Spec subagent — `subagent_type: code-reviewer-spec` (`agents/code-reviewer-spec.md`, effort: medium) — only spawn if step 2 found an active change with in-scope scenarios:
+   > Skill directory: <absolute path from step 3>.
+   >
    > Diff command and commit list, the active OpenSpec change name, and the WHEN/THEN scenarios in scope from step 2.
 
-4. **Print the full report verbatim.** Output the findings as a text message before doing anything else, in order — do not skip ahead to fixing. Then act on the findings per the project's documented workflow (e.g. `AGENTS.md`, `CLAUDE.md`), if one exists.
+5. **Print the full report verbatim.** Output the findings as a text message before doing anything else, in order — do not skip ahead to fixing. Then act on the findings per the project's documented workflow (e.g. `AGENTS.md`, `CLAUDE.md`), if one exists.
    - Incremental: print the single subagent's report as-is.
    - Full: print the Quality subagent's report under a `## Quality` heading, then the Spec subagent's report under a `## Spec` heading — or, if the Spec subagent was skipped, a `## Spec` heading with a one-line "no spec available for this review" note. Do not merge, rerank, or compare findings across the two headings — each axis stands on its own.

@@ -12,11 +12,11 @@ If a hunk touches a class, function, or import whose definition falls outside th
 
 ### Quality
 
-Does the diff hold up on its own merits, independent of any spec? Read `references/lens-quality.md` from your skill directory and apply Correctness, Test quality, Style and structure, and Architecture exactly as written there — including the smell baseline it points to.
+Does the diff hold up on its own merits, independent of any spec? Read `lens-quality.md` in this same `references/` directory and apply Correctness, Test quality, Style and structure, and Architecture exactly as written there — including the smell baseline it points to.
 
 ### Spec compliance (when OpenSpec context is provided)
 
-Review against the task context you're given and do not re-read `tasks.md` or spec files directly. Read `references/lens-spec.md` from your skill directory and apply it exactly as written there.
+Review against the task context you're given and do not re-read `tasks.md` or spec files directly. Read `lens-spec.md` in this same `references/` directory and apply it exactly as written there.
 
 ## Tone
 

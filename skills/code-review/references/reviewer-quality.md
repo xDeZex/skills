@@ -8,7 +8,7 @@ You'll be given a list of changed files and the command to get the full diff. Ge
 
 ## What to check
 
-Read `references/lens-quality.md` from your skill directory and apply Correctness, Test quality, Style and structure, and Architecture exactly as written there — including the smell baseline it points to.
+Read `lens-quality.md` in this same `references/` directory and apply Correctness, Test quality, Style and structure, and Architecture exactly as written there — including the smell baseline it points to.
 
 ## Tone
 

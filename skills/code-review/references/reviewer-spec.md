@@ -8,7 +8,7 @@ You will be given the diff (or the commit range and file list to fetch it from),
 
 ## What to check
 
-Read `references/lens-spec.md` from your skill directory and apply it exactly as written there.
+Read `lens-spec.md` in this same `references/` directory and apply it exactly as written there.
 
 ## Output format
 
