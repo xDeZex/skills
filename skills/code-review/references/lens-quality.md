@@ -2,7 +2,9 @@
 
 Check every finding against a RED test: could a failing test have caught this? A logic error with no test is a missing test as much as a bug — the fix is a RED test that exposes it, then the code change. A test that passes before the implementation exists, or breaks on an internal rename, is not a real test — flag it as its own finding.
 
-For non-code changes (docs, config, schemas, specs), apply the same rigor without assuming tests exist: does a passage contradict another part of the same or a linked file? Does a worked example match the rule it illustrates? Is a stated fact (a count, an order, a cross-reference) still accurate? Fix these by editing the text, not by writing a test.
+For non-code changes (docs, config, schemas), apply the same rigor without assuming tests exist: does a passage contradict another part of the same or a linked file? Does a worked example match the rule it illustrates? Is a stated fact (a count, an order, a cross-reference) still accurate? Fix these by editing the text, not by writing a test.
+
+OpenSpec files (`openspec/changes/**`, `openspec/specs/**`) are the Spec axis's territory end to end — skip them here entirely, even when they appear in the changed-file list.
 
 ## Correctness
 
