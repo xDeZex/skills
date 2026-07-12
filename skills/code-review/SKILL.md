@@ -46,6 +46,6 @@ Spawn a review subagent with the diff and let it gather its own context.
    >
    > Diff command and commit list, the active OpenSpec change name, and the WHEN/THEN scenarios in scope from step 2.
 
-5. **Print the full report verbatim.** Output the findings as a text message before doing anything else, in order — do not skip ahead to fixing. Then act on the findings per the project's documented workflow (e.g. `AGENTS.md`, `CLAUDE.md`), if one exists.
+5. **Print the full report verbatim.** Output the findings as a text message before doing anything else, in order — do not skip ahead to fixing. Then act on the findings: fix every **Fix now** finding — the subagent's disposition is final, do not re-judge one as too structural or too risky and downgrade it to filing on your own. For **Needs filing** findings, follow the project's documented workflow (e.g. `AGENTS.md`, `CLAUDE.md`) if one exists; otherwise leave them in the printed report for the user to triage.
    - Incremental: print the single subagent's report as-is.
    - Full: print the Quality subagent's report under a `## Quality` heading, then the Spec subagent's report under a `## Spec` heading — or, if the Spec subagent was skipped, a `## Spec` heading with a one-line "no spec available for this review" note. Do not merge, rerank, or compare findings across the two headings — each axis stands on its own.
