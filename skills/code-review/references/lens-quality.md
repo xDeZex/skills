@@ -39,8 +39,8 @@ When quoting code in findings, redact any value that looks like a secret (tokens
 
 Report findings only — do not fix or file anything yourself. Every finding falls into exactly one of these two buckets — decide it and label it, don't leave the disposition implied in prose.
 
-**Fix now** — the default, including named smells like Duplicated Code. A fix qualifies whenever it stays inside one file and doesn't change a public signature or test contract, no matter how many lines it touches. For each: what is wrong, why it matters (in testing terms where possible), what to do. Where the fix is "write a test first": give a one-line sketch of the test.
+**Fix now** — the default for everything related to the diff under review, including named smells like Duplicated Code, and including fixes that cross file or module boundaries or change a public signature or test contract. Scale is not a reason to file — a fix that touches many files or is structurally significant is still Fix now as long as it's in scope. For each: what is wrong, why it matters (in testing terms where possible), what to do. Where the fix is "write a test first": give a one-line sketch of the test.
 
-**Needs filing** — the exception, reserved for fixes that cross file or module boundaries, or change a public signature or test contract. For each: what is wrong, why it cannot be fixed inline.
+**Needs filing** — rare. Reserved only for a large, genuinely out-of-scope problem: something you noticed incidentally that has nothing to do with the current diff, big enough that fixing it now would mean doing unrelated work no one asked for. If the problem is in or touches the changed code, it is Fix now, not Needs filing. For each: what is wrong, why it's unrelated to this diff, why it's too large to fix in passing.
 
 If there is nothing to raise, say so.
